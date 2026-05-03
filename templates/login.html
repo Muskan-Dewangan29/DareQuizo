@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+</head>
+<body>
+
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2>Welcome to GEM-AI "Your personal context based MCQ Generator"</h2>
+        <p class="subtitle">Login to continue your learning journey</p>
+
+        <form method="POST" action="/login">
+
+            <div class="input-box">
+                <input type="email" name="email" required>
+                <label>Email</label>
+            </div>
+
+            <div class="input-box">
+                <input type="password" name="password" required>
+                <label>Password</label>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+
+        </form>
+
+        <p class="footer-text">
+            New here? <a href="/signup">Create Account</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

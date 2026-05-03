@@ -21,18 +21,6 @@
             }
         }
 
-       .logo-video {
-            height: 70px;   
-            width: auto;
-            border-radius: 8px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
-        }
-
-        .logo-video:hover {
-            transform: scale(1.1);
-        }
-
         .upload-box {
             background: white;
             transition: 0.3s;
@@ -66,9 +54,10 @@
         style="background: linear-gradient(90deg, #0f172a, #1e293b, #0b1324);">
             
         <div class="d-flex flex-column">
-            <video class="logo-video" autoplay muted loop playsinline>
-                <source src="{{ url_for('static', filename='logo.mp4') }}" type="video/mp4">
-            </video>
+            <span class="navbar-brand fw-bold fs-4 mb-0">GEM AI</span>
+            <small class="text-light opacity-75" style="letter-spacing:0.3px;">
+                Generated Exam MCQs using AI
+            </small>
         </div>
 
         <div class="d-flex align-items-center gap-3">
@@ -83,7 +72,7 @@
     <div class="container mt-5">
         <div class="card shadow-lg p-4 rounded-4 border-0">
 
-            <h4>Generate Questions</h4>
+            <h4>Generate MCQs</h4>
 
             <form method="post" enctype="multipart/form-data" id="mcqForm">
 
@@ -190,7 +179,7 @@
 
                 <!-- Generate Button -->
                 <button class="btn btn-primary w-100 mt-4 py-2 rounded-4 fw-semibold">
-                    🚀 Generate Questions
+                    🚀 Generate MCQs
                 </button>
 
             </form>
@@ -214,8 +203,8 @@
         padding:20px;
     ">
         <div class="spinner-border text-light mb-3" style="width:4rem;height:4rem;"></div>
-        <h4 class="fw-bold">Generating Questions...</h4>
-        <p class="opacity-75 mb-0">QUIZ Builder is analyzing your content ✨</p>
+        <h4 class="fw-bold">Generating MCQs...</h4>
+        <p class="opacity-75 mb-0">GEM AI is analyzing your content ✨</p>
     </div>
 
     <script>
