@@ -1,13 +1,64 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GenAI MCQ Generator Pro</title>
+    <title>QuizBuilder AI</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
+
     <style>
-        /* Navbar slide animation */
+        /* ================= THEMES ================= */
+
+        /* LIGHT MODE (PURPLE) */
+        body.light-mode {
+            background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+            color: #1e293b;
+        }
+
+        body.light-mode .navbar {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+        }
+
+        body.light-mode .card {
+            background: #ffffff;
+        }
+
+        body.light-mode .upload-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* DARK MODE */
+       
+        body.dark-mode {
+            background: linear-gradient(180deg, #020617, #020617 40%, #0b1a3a);
+            color: #e2e8f0;
+        }
+
+        /* Navbar stays dark */
+        body.dark-mode .navbar {
+            background: linear-gradient(90deg, #020617, #020617, #0b1a3a);
+        }
+
+        /*  KEEP CARD WHITE */
+        body.dark-mode .card {
+            background: #ffffff;
+            color: #1e293b;
+        }
+
+        /* KEEP UPLOAD BOXES LIGHT */
+        body.dark-mode .upload-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            color: #1e293b;
+        }
+
+        /* Fix muted text inside card */
+        body.dark-mode .text-muted {
+            color: #64748b !important;
+}
+
+        /* ================= COMMON ================= */
+
         #topNav {
             transform: translateY(-30px);
             opacity: 0;
@@ -22,21 +73,19 @@
         }
 
         .upload-box {
-            background: white;
-            transition: 0.3s;
-        }
-        #chatPopup button {
-        transition: all 0.2s ease;
+            transition: all 0.25s ease;
         }
 
-        #chatPopup button:hover {
-            transform: scale(1.1);
+        .upload-box:hover {
+            transform: translateY(-5px);
+            border-color: #6366F1;
+            box-shadow: 0 10px 25px rgba(99,102,241,0.2);
         }
+
         .navbar small {
             font-size: 12px;
         }
 
-        /* Brand glow animation */
         .navbar-brand {
             animation: glowPulse 2.5s infinite ease-in-out;
         }
@@ -45,233 +94,169 @@
             0%, 100% { text-shadow: 0 0 0 rgba(255,255,255,0); }
             50% { text-shadow: 0 0 12px rgba(255,255,255,0.35); }
         }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            border: none;
+            color: white;
+            transition: 0.2s;
+        }
+
+        .generate-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(99,102,241,0.3);
+        }
     </style>
 </head>
 
-<body class="bg-light">
+<body class="light-mode">
 
-    <nav class="navbar navbar-dark px-4 py-3 shadow-sm" id="topNav" 
-        style="background: linear-gradient(90deg, #0f172a, #1e293b, #0b1324);">
-            
-        <div class="d-flex flex-column">
-            <span class="navbar-brand fw-bold fs-4 mb-0">GEM AI</span>
-            <small class="text-light opacity-75" style="letter-spacing:0.3px;">
-                Generated Exam MCQs using AI
-            </small>
-        </div>
+<nav class="navbar navbar-dark px-4 py-3 shadow-sm" id="topNav">
+    <div class="d-flex flex-column">
+        <span class="navbar-brand fw-bold fs-4 mb-0">QuizBuilder</span>
+        <small class="text-light opacity-75">
+            Generates Objective-type QnA using AI
+        </small>
+    </div>
 
-        <div class="d-flex align-items-center gap-3">
-            <span class="text-light small opacity-75">Upload • Generate • Learn</span>
+    <div class="d-flex align-items-center gap-3">
+        <span class="text-light small opacity-75">Upload • Generate • Learn</span>
 
-            <button id="themeBtn" onclick="toggleTheme()" class="btn btn-sm btn-light rounded-3">
-                🌙
+        <button id="themeBtn" onclick="toggleTheme()" class="btn btn-sm btn-light rounded-3">
+            🌙
+        </button>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-4 border-0">
+
+        <h4>Generate Questions</h4>
+        <p class="text-muted mb-4">Upload content and instantly generate smart exam questions</p>
+
+        <form method="post" enctype="multipart/form-data" id="mcqForm">
+
+            <label class="form-label fw-semibold">Enter Topic</label>
+            <input class="form-control mb-4" name="topic" placeholder="e.g. Computer Networks, AI, DBMS...">
+
+            <h6 class="fw-bold mb-3">Upload Any File</h6>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <div class="rounded-4 p-3 upload-box shadow-sm">
+                        <label class="fw-semibold">📄 PDF</label>
+                        <input class="form-control mt-2" type="file" name="pdf_file">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="rounded-4 p-3 upload-box shadow-sm">
+                        <label class="fw-semibold">📝 TXT</label>
+                        <input class="form-control mt-2" type="file" name="txt_file">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="rounded-4 p-3 upload-box shadow-sm">
+                        <label class="fw-semibold">📑 DOCX</label>
+                        <input class="form-control mt-2" type="file" name="docx_file">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="rounded-4 p-3 upload-box shadow-sm">
+                        <label class="fw-semibold">🖼️ Image</label>
+                        <input class="form-control mt-2" type="file" name="image_file">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="rounded-4 p-3 upload-box shadow-sm">
+                        <label class="fw-semibold">🎧 Audio</label>
+                        <input class="form-control mt-2" type="file" name="audio_file">
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="rounded-4 p-3 upload-box shadow-sm">
+                        <label class="fw-semibold">🎬 Video</label>
+                        <input class="form-control mt-2" type="file" name="video_file">
+                    </div>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Select Level</label>
+                    <select class="form-control" name="difficulty">
+                        <option>Easy</option>
+                        <option>Medium</option>
+                        <option>Hard</option>
+                        <option>GATE</option>
+                        <option>NET</option>
+                        <option>UPSC</option>
+                        <option>CGPSC</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Number of Questions</label>
+                    <input class="form-control" name="count" type="number" value="5">
+                </div>
+
+            </div>
+
+            <button class="generate-btn w-100 mt-4 py-3 rounded-4 fw-semibold">
+                🚀 Generate MCQs
             </button>
-        </div>
-    </nav>
 
-    <div class="container mt-5">
-        <div class="card shadow-lg p-4 rounded-4 border-0">
-
-            <h4>Generate MCQs</h4>
-
-            <form method="post" enctype="multipart/form-data" id="mcqForm">
-
-                <!-- Topic -->
-                <label class="form-label fw-semibold">Enter Topic</label>
-                <input class="form-control mb-4" name="topic" 
-                    placeholder="e.g. Computer Networks, AI, DBMS...">
-
-                <!-- Upload Section -->
-                <h6 class="fw-bold mb-3">Upload Any File</h6>
-
-                <div class="row g-3">
-
-                    <!-- PDF -->
-                    <div class="col-md-6">
-                        <div class="border rounded-4 p-3 upload-box shadow-sm">
-                            <label class="form-label fw-semibold">📄 PDF</label>
-                            <input class="form-control" type="file" name="pdf_file" accept=".pdf">
-                            <small class="text-muted">Upload PDF for MCQs</small>
-                        </div>
-                    </div>
-
-                    <!-- TXT -->
-                    <div class="col-md-6">
-                        <div class="border rounded-4 p-3 upload-box shadow-sm">
-                            <label class="form-label fw-semibold">📝 TXT</label>
-                            <input class="form-control" type="file" name="txt_file" accept=".txt">
-                            <small class="text-muted">Upload text file</small>
-                        </div>
-                    </div>
-
-                    <!-- DOCX -->
-                    <div class="col-md-6">
-                        <div class="border rounded-4 p-3 upload-box shadow-sm">
-                            <label class="form-label fw-semibold">📑 DOCX</label>
-                            <input class="form-control" type="file" name="docx_file" accept=".docx">
-                            <small class="text-muted">Upload Word document</small>
-                        </div>
-                    </div>
-
-                    <!-- IMAGE -->
-                    <div class="col-md-6">
-                        <div class="border rounded-4 p-3 upload-box shadow-sm">
-                            <label class="form-label fw-semibold">🖼️ Image</label>
-                            <input class="form-control" type="file" name="image_file" accept="image/*">
-                        </div>
-                    </div>
-
-                    <!-- AUDIO -->
-                    <div class="col-md-6">
-                        <div class="border rounded-4 p-3 upload-box shadow-sm">
-                            <label class="form-label fw-semibold">🎧 Audio</label>
-                            <input class="form-control" type="file" name="audio_file" accept="audio/*">
-                        </div>
-                    </div>
-
-                    <!-- VIDEO -->
-                    <div class="col-md-6">
-                        <div class="border rounded-4 p-3 upload-box shadow-sm">
-                            <label class="form-label fw-semibold">🎬 Video</label>
-                            <input class="form-control" type="file" name="video_file" accept="video/*">                    
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Settings -->
-                <hr class="my-4">
-
-                <div class="row g-3">
-
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">Select Level</label>
-                        <select class="form-control" name="difficulty">
-
-                            <!-- General Difficulty -->
-                            <option value="Easy">Easy</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Hard">Hard</option>
-
-                            <!-- Exam Levels -->
-                            <option value="GATE">GATE</option>
-                            <option value="NET">NET</option>
-                            <option value="UPSC">UPSC</option>
-                            <option value="CGPSC">CGPSC</option>
-
-                            <!-- Bloom's Taxonomy -->
-                            <option value="Remembering">Bloom's - Remembering</option>
-                            <option value="Understanding">Bloom's - Understanding</option>
-                            <option value="Applying">Bloom's - Applying</option>
-                            <option value="Analyzing">Bloom's - Analyzing</option>
-                            <option value="Evaluating">Bloom's - Evaluating</option>
-                            <option value="Creating">Bloom's - Creating</option>
-
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">Number of Questions</label>
-                        <input class="form-control" name="count" type="number" value="5" min="1" max="50">
-                    </div>
-
-                </div>
-
-                <!-- Generate Button -->
-                <button class="btn btn-primary w-100 mt-4 py-2 rounded-4 fw-semibold">
-                    🚀 Generate MCQs
-                </button>
-
-            </form>
-
-        </div>
+        </form>
     </div>
+</div>
 
-    <!-- Loading Overlay -->
-    <div id="loadingScreen" style="
-        display:none;
-        position:fixed;
-        top:0; left:0;
-        width:100%; height:100%;
-        background:rgba(0,0,0,0.85);
-        z-index:9999;
-        align-items:center;
-        justify-content:center;
-        flex-direction:column;
-        color:white;
-        text-align:center;
-        padding:20px;
-    ">
-        <div class="spinner-border text-light mb-3" style="width:4rem;height:4rem;"></div>
-        <h4 class="fw-bold">Generating MCQs...</h4>
-        <p class="opacity-75 mb-0">GEM AI is analyzing your content ✨</p>
-    </div>
+<!-- Loading -->
+<div id="loadingScreen" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; flex-direction:column; color:white;">
+    <div class="spinner-border text-light mb-3" style="width:4rem;height:4rem;"></div>
+    <h4>Generating MCQs...</h4>
+</div>
 
-    <script>
-    let darkMode = localStorage.getItem("theme") !== "light";
+<script>
+let darkMode = localStorage.getItem("theme") === "dark";
 
-    // Apply theme on load
-    document.addEventListener("DOMContentLoaded", () => {
-        applyTheme();
-    });
+document.addEventListener("DOMContentLoaded", () => {
+    applyTheme();
+});
 
-    function toggleTheme() {
-        darkMode = !darkMode;
-        localStorage.setItem("theme", darkMode ? "dark" : "light");
-        applyTheme();
+function toggleTheme() {
+    darkMode = !darkMode;
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+    applyTheme();
+}
+
+function applyTheme() {
+    const body = document.body;
+    const btn = document.getElementById("themeBtn");
+
+    if (darkMode) {
+        body.classList.remove("light-mode");
+        body.classList.add("dark-mode");
+        btn.innerText = "☀️";
+    } else {
+        body.classList.remove("dark-mode");
+        body.classList.add("light-mode");
+        btn.innerText = "🌙";
     }
+}
 
-    function applyTheme() {
-        const body = document.body;
-        const cards = document.querySelectorAll(".card");
-        const navbar = document.querySelector(".navbar");
-        const btn = document.getElementById("themeBtn");
-        const uploadBoxes = document.querySelectorAll(".upload-box");
-
-        if (darkMode) {
-            body.classList.remove("bg-light");
-            body.style.background = "#0b1324";
-            body.style.color = "white";
-
-            uploadBoxes.forEach(b => {
-                b.style.background = "#1e293b";
-                b.style.color = "white";
-            });
-
-            uploadBoxes.forEach(b => {
-                b.style.background = "white";
-                b.style.color = "black";
-            });
-
-            if (navbar) navbar.style.background = "linear-gradient(90deg, #020617, #0f172a)";
-            if (btn) btn.innerText = "☀️";
-
-        } else {
-            body.classList.add("bg-light");
-            body.style.background = "";
-            body.style.color = "";
-
-            cards.forEach(c => {
-                c.style.background = "white";
-                c.style.color = "black";
-            });
-
-            if (navbar) navbar.style.background = "linear-gradient(90deg, #0f172a, #1e293b, #0b1324)";
-            if (btn) btn.innerText = "🌙";
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const form = document.getElementById("mcqForm");
-        const loading = document.getElementById("loadingScreen");
-
-        if (form) {
-            form.addEventListener("submit", () => {
-                loading.style.display = "flex";
-            });
-        }
-    });
-    </script>
+document.getElementById("mcqForm").addEventListener("submit", () => {
+    document.getElementById("loadingScreen").style.display = "flex";
+});
+</script>
 
 </body>
 </html>
