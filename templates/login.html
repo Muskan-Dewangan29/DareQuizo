@@ -1,43 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #6a5af9, #8b5cf6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Glass Card */
+.login-card {
+    width: 380px;
+    padding: 35px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    text-align: center;
+    color: white;
+}
+
+/* Logo */
+.logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: white;
+    color: #6a5af9;
+    font-weight: bold;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+}
+
+/* Heading */
+h2 {
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 25px;
+}
+
+/* Inputs */
+.form-group {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.form-group input::placeholder {
+    color: #ddd;
+}
+
+/* Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: #6a5af9;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Footer */
+.footer-link {
+    margin-top: 18px;
+    font-size: 14px;
+}
+
+.footer-link a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-link a:hover {
+    text-decoration: underline;
+}
+</style>
+
 </head>
+
 <body>
 
-<div class="background">
-    <div class="shape"></div>
-    <div class="shape"></div>
-</div>
+<div class="login-card">
+    <video class="logo-video" autoplay loop muted playsinline>
+        <source src="{{ url_for('static', filename='logo.mp4') }}" type="video/mp4">
+    </video>
 
-<div class="container">
-    <div class="card">
-        <h2>Welcome to GEM-AI "Your personal context based MCQ Generator"</h2>
-        <p class="subtitle">Login to continue your learning journey</p>
+    <h2>Welcome Back</h2>
+    <div class="subtitle">Login to continue</div>
 
-        <form method="POST" action="/login">
+    <form method="POST">
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Enter username">
+        </div>
 
-            <div class="input-box">
-                <input type="email" name="email" required>
-                <label>Email</label>
-            </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter password">
+        </div>
 
-            <div class="input-box">
-                <input type="password" name="password" required>
-                <label>Password</label>
-            </div>
+        <button class="login-btn">Login</button>
+    </form>
 
-            <div class="button-group">
-                <button type="submit" class="btn btn-primary">Login</button>
-            </div>
-
-        </form>
-
-        <p class="footer-text">
-            New here? <a href="/signup">Create Account</a>
-        </p>
+    <div class="footer-link">
+        Don't have an account? <a href="signup.html">Sign up</a>
     </div>
 </div>
 

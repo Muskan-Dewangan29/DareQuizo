@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from dotenv import load_dotenv
 from groq import Groq
 import os
@@ -6,14 +6,15 @@ from PyPDF2 import PdfReader
 from docx import Document
 import pytesseract
 from PIL import Image
-import re
+import io
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY")
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/index", methods=["GET", "POST"])
 def index():
     mcqs = ""
 
@@ -339,6 +340,36 @@ def chat():
         "reply": reply,
         "sources": sources
     })
+# SIGNUP
+@app.route("/", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        # store user
+        users[username] = password
+
+        return redirect(url_for("login"))
+
+    return render_template("signup.html")
+
+# LOGIN
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        # check user
+        if username in users and users[username] == password:
+            session["user"] = username
+            return redirect(url_for("dashboard"))
+        else:
+            return "Invalid login"
+
+    return render_template("login.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
