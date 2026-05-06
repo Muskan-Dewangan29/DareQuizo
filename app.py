@@ -204,136 +204,136 @@ def index():
             - Maintain the exact tone and difficulty of the selected level.
             """
 
-        # ✅ Build prompt
-       # 🔥 SIMPLE MCQ MODE (Generate Button)
-            if mode == "practice":
-                if extracted_text:
-                    prompt = f"""
-                    Generate exactly {count} MCQs from the given text.
+        # 🔥 SIMPLE MCQ MODE (Generate Button)
+        if mode == "practice":
+            if extracted_text:
+                prompt = f"""
+                Generate exactly {count} MCQs from the given text.
             
-                    FORMAT:
-                    Q1) Question
-                    A) ...
-                    B) ...
-                    C) ...
-                    D) ...
+                FORMAT:
+                Q1) Question
+                A) ...
+                B) ...
+                C) ...
+                D) ...
             
-                    Q2) Question
-                    A) ...
-                    B) ...
-                    C) ...
-                    D) ...
+                Q2) Question
+                A) ...
+                B) ...
+                C) ...
+                D) ...
             
-                    RULES:
-                    1. Only MCQs
-                    2. No explanations
-                    3. No extra text
-                    4. Keep clean format
+                RULES:
+                1. Only MCQs
+                2. No explanations
+                3. No extra text
+                4. Keep clean format
             
-                    TEXT:
-                    {extracted_text}
-                    """
-                else:
-                    prompt = f"""
-                    Generate exactly {count} MCQs on topic: {topic}
+                TEXT:
+                {extracted_text}
+                """
+            else:
+                prompt = f"""
+                Generate exactly {count} MCQs on topic: {topic}
             
-                    FORMAT:
-                    Q1) Question
-                    A) ...
-                    B) ...
-                    C) ...
-                    D) ...
+                FORMAT:
+                Q1) Question
+                A) ...
+                B) ...
+                C) ...
+                D) ...
             
-                    RULES:
-                    1. Only MCQs
-                    2. No explanations
-                    """
+                RULES:
+                1. Only MCQs
+                2. No explanations
+                """
             
-            # 🎯 QUIZ MODE (KEEP EXISTING LOGIC SAME)
+        # 🎯 QUIZ MODE (KEEP EXISTING LOGIC SAME)
          else:
-            prompt = f"""
-            You are an expert exam question setter.
-
-            Task:
-            Generate exactly {count} HIGH-QUALITY questions from the given text.
-
-            IMPORTANT:
-            Generate a MIX of different question types, not only MCQs.
-
-            Include:
-            1. MCQs (Multiple Choice Questions)
-            2. Fill in the blanks
-            3. Short answer questions
-            4. One word answer questions
-            5. Case study based questions
-            6. True/False
-            7. Assertion-Reason (if applicable)
-
-            {level_instruction}
-
-            FORMAT:
-
-            Q1) (MCQ)
-            Question...
-            A) ...
-            B) ...
-            C) ...
-            D) ...
-            Answer: <A/B/C/D>
-            Explanation: ...
-
-            Q2) (Fill in the Blank)
-            Question with ______
-            Answer: ...
-
-            Q3) (Short Answer)
-            Question...
-            Answer: ...
-
-            Q4) (One Word)
-            Question...
-            Answer: ...
-
-            Q5) (Case Study)
-            <Small paragraph>
-            Questions:
-            a) ...
-            b) ...
-            Answers:
-            a) ...
-            b) ...
-
-            Q6) (True/False)
-            Statement...
-            Answer: True/False
-
-            Q7) (Assertion-Reason)
-            Assertion: ...
-            Reason: ...
-            Options:
-            A) Both true
-            B) Both false
-            C) Assertion true, Reason false
-            D) Assertion false, Reason true
-            Answer: ...
-
-            RULES:
-            1. Questions must be from the text only
-            2. Do not repeat questions
-            3. Do not add extra commentary
-            4. Keep language simple and exam-oriented
-            5. Add 1-2 trusted reference links
-            STRICT FORMATTING RULES:
-            1. DO NOT use ** or any markdown symbols
-            2. DO NOT add extra blank lines between questions
-            3. DO NOT mention marks like (5 marks), (2 marks), etc.
-            4. Keep everything in plain text only
-            5. Each question must start exactly like: Q1) (Type)
-            6. Question should be in the same line, no unnecessary spacing
-            7. Do NOT add notes or instructions like [Note: ...]
-            TEXT:
-            {extracted_text}
-            """
+             if extracted_text:
+                prompt = f"""
+                You are an expert exam question setter.
+    
+                Task:
+                Generate exactly {count} HIGH-QUALITY questions from the given text.
+    
+                IMPORTANT:
+                Generate a MIX of different question types, not only MCQs.
+    
+                Include:
+                1. MCQs (Multiple Choice Questions)
+                2. Fill in the blanks
+                3. Short answer questions
+                4. One word answer questions
+                5. Case study based questions
+                6. True/False
+                7. Assertion-Reason (if applicable)
+    
+                {level_instruction}
+    
+                FORMAT:
+    
+                Q1) (MCQ)
+                Question...
+                A) ...
+                B) ...
+                C) ...
+                D) ...
+                Answer: <A/B/C/D>
+                Explanation: ...
+    
+                Q2) (Fill in the Blank)
+                Question with ______
+                Answer: ...
+    
+                Q3) (Short Answer)
+                Question...
+                Answer: ...
+    
+                Q4) (One Word)
+                Question...
+                Answer: ...
+    
+                Q5) (Case Study)
+                <Small paragraph>
+                Questions:
+                a) ...
+                b) ...
+                Answers:
+                a) ...
+                b) ...
+    
+                Q6) (True/False)
+                Statement...
+                Answer: True/False
+    
+                Q7) (Assertion-Reason)
+                Assertion: ...
+                Reason: ...
+                Options:
+                A) Both true
+                B) Both false
+                C) Assertion true, Reason false
+                D) Assertion false, Reason true
+                Answer: ...
+    
+                RULES:
+                1. Questions must be from the text only
+                2. Do not repeat questions
+                3. Do not add extra commentary
+                4. Keep language simple and exam-oriented
+                5. Add 1-2 trusted reference links
+                STRICT FORMATTING RULES:
+                1. DO NOT use ** or any markdown symbols
+                2. DO NOT add extra blank lines between questions
+                3. DO NOT mention marks like (5 marks), (2 marks), etc.
+                4. Keep everything in plain text only
+                5. Each question must start exactly like: Q1) (Type)
+                6. Question should be in the same line, no unnecessary spacing
+                7. Do NOT add notes or instructions like [Note: ...]
+                TEXT:
+                {extracted_text}
+                """
         else:
            prompt = f"""
             You are an expert exam question setter.
