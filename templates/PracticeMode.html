@@ -83,11 +83,40 @@
         button:hover {
             transform: scale(1.05);
         }
+
+        .login-hint {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .blink-link {
+            color: #d63384;
+            font-weight: bold;
+            text-decoration: none;
+            animation: blink 1s infinite;
+        }
+        animation: pulse 1.5s infinite;
+
+        @keyframes blink {
+            0%   { opacity: 1; }
+            50%  { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+        
+        .blink-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
 
 <h2>Practice MCQs</h2>
+
+<p class="login-hint">
+    <a href="/login" class="blink-link">
+        Login or Sign Up and switch to Quiz Mode for better experience
+    </a>
+</p>
 
 <button onclick="window.location.href='/index'" class="back-btn">
     ⬅ Back to Home
@@ -119,8 +148,9 @@
 
             if (line.startsWith("A)") || line.startsWith("B)") || line.startsWith("C)") || line.startsWith("D)")) {
                 options.push(line);
-            } else if (/^answer\s*:/i.test(line)) {
-                answer = "Correct " + line;
+            } else if (line.toLowerCase().includes("answer")) {
+                const match = line.match(/[A-D]/i);
+                answer = match ? "Correct Answer: " + match[0].toUpperCase() : line;
             } else {
                 question += line + " ";
             }
