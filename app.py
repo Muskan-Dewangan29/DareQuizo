@@ -334,63 +334,63 @@ def index():
                 TEXT:
                 {extracted_text}
                 """
-        else:
-           prompt = f"""
-            You are an expert exam question setter.
-
-            Generate exactly {count} HIGH-QUALITY questions on this topic: {topic}
-
-            IMPORTANT:
-            Generate a MIX of different question types.
-
-            Include:
-            - MCQs
-            - Fill in the blanks
-            - Short answer
-            - One word
-            - Case study
-            - True/False
-            - Assertion-Reason
-
-            {level_instruction}
-
-            Follow this format:
-
-            Q1) (MCQ)
-            ...
-
-            Q2) (Fill in the Blank)
-            ...
-
-            Q3) 
-            ...
-
-            Q4) (One Word)
-            ...
-
-            Q5) (Case Study)
-            ...
-
-            Q6) (True/False)
-            ...
-
-            Q7) (Assertion-Reason)
-            ...
-
-            RULES:
-            1. Do not repeat questions
-            2. Keep exam-level quality
-            3. Keep answers accurate
-            4. Add 1-2 trusted reference links
-            """
-
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        mcqs = response.choices[0].message.content
-        mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty}\n\n" + mcqs
+            else:
+               prompt = f"""
+                You are an expert exam question setter.
+    
+                Generate exactly {count} HIGH-QUALITY questions on this topic: {topic}
+    
+                IMPORTANT:
+                Generate a MIX of different question types.
+    
+                Include:
+                - MCQs
+                - Fill in the blanks
+                - Short answer
+                - One word
+                - Case study
+                - True/False
+                - Assertion-Reason
+    
+                {level_instruction}
+    
+                Follow this format:
+    
+                Q1) (MCQ)
+                ...
+    
+                Q2) (Fill in the Blank)
+                ...
+    
+                Q3) 
+                ...
+    
+                Q4) (One Word)
+                ...
+    
+                Q5) (Case Study)
+                ...
+    
+                Q6) (True/False)
+                ...
+    
+                Q7) (Assertion-Reason)
+                ...
+    
+                RULES:
+                1. Do not repeat questions
+                2. Keep exam-level quality
+                3. Keep answers accurate
+                4. Add 1-2 trusted reference links
+                """
+    
+            response = client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[{"role": "user", "content": prompt}]
+            )
+    
+            mcqs = response.choices[0].message.content
+            mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty}\n\n" + mcqs
 
 
     if mcqs:
