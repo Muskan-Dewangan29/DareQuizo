@@ -43,7 +43,7 @@ create_table()
 # ======================
 @app.route("/")
 def home():
-    return redirect(url_for("login"))
+    return redirect(url_for("index"))
 
 # SIGNUP
 # ======================
