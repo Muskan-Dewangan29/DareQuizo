@@ -6,3 +6,4 @@ python-docx
 pytesseract
 Pillow
 gunicorn
+reportlab
