@@ -50,7 +50,7 @@
 <div id="mcq-container"></div>
 
 <script>
-    const rawText = `{{ mcqs | safe }}`;
+    const rawText = {{ mcqs | tojson }};
 
     const container = document.getElementById("mcq-container");
 
@@ -72,8 +72,8 @@
 
             if (line.startsWith("A)") || line.startsWith("B)") || line.startsWith("C)") || line.startsWith("D)")) {
                 options.push(line);
-            } else if (line.toLowerCase().includes("answer")) {
-                answer = line;
+            } else if (/^answer\s*:/i.test(line)) {
+                answer = "Correct " + line;
             } else {
                 question += line + " ";
             }
