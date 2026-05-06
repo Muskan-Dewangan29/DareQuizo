@@ -205,7 +205,52 @@ def index():
             """
 
         # ✅ Build prompt
-        if extracted_text:
+       # 🔥 SIMPLE MCQ MODE (Generate Button)
+            if mode == "practice":
+                if extracted_text:
+                    prompt = f"""
+                    Generate exactly {count} MCQs from the given text.
+            
+                    FORMAT:
+                    Q1) Question
+                    A) ...
+                    B) ...
+                    C) ...
+                    D) ...
+            
+                    Q2) Question
+                    A) ...
+                    B) ...
+                    C) ...
+                    D) ...
+            
+                    RULES:
+                    1. Only MCQs
+                    2. No explanations
+                    3. No extra text
+                    4. Keep clean format
+            
+                    TEXT:
+                    {extracted_text}
+                    """
+                else:
+                    prompt = f"""
+                    Generate exactly {count} MCQs on topic: {topic}
+            
+                    FORMAT:
+                    Q1) Question
+                    A) ...
+                    B) ...
+                    C) ...
+                    D) ...
+            
+                    RULES:
+                    1. Only MCQs
+                    2. No explanations
+                    """
+            
+            # 🎯 QUIZ MODE (KEEP EXISTING LOGIC SAME)
+         else:
             prompt = f"""
             You are an expert exam question setter.
 
