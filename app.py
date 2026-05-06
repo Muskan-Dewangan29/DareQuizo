@@ -76,16 +76,6 @@ def signup():
 
     return render_template("signup.html")
 
-@app.route("/check-users")
-def check_users():
-    conn = get_db()
-    users = conn.execute("SELECT * FROM users").fetchall()
-    conn.close()
-
-    return {
-        "users": [dict(u) for u in users]
-    }
-
 # LOGIN
 @app.route("/login", methods=["GET", "POST"])
 def login():
