@@ -9,7 +9,7 @@ from PIL import Image
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Image as RLImage, Spacer
+from reportlab.platypus import Preformatted, SimpleDocTemplate, Paragraph, Image as RLImage, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from docx import Document as DocxDocument
 from io import BytesIO
@@ -458,36 +458,48 @@ def export_file(format):
     # ===== PDF EXPORT =====
     if format == "pdf":
         buffer = BytesIO()
-        doc = SimpleDocTemplate(buffer)
+    
+        doc = SimpleDocTemplate(buffer, pagesize=None)
         styles = getSampleStyleSheet()
-
+    
         elements = []
-
-        # Add logo
+    
+        logo_path = "static/logo.png"
+    
+        # SAFE LOGO HANDLING
         if os.path.exists(logo_path):
             try:
-                if os.path.exists(logo_path):
-                    elements.append(RLImage(logo_path, width=100, height=50))
-                    elements.append(Spacer(1, 10))
+                elements.append(RLImage(logo_path, width=120, height=60))
+                elements.append(Spacer(1, 10))
             except:
                 pass
-            elements.append(Spacer(1, 10))
-
-        # Add content
-        for line in content.split("\n"):
-            elements.append(Paragraph(line, styles["Normal"]))
-
+    
+        # CLEAN TEXT SPLITTING (VERY IMPORTANT FIX)
+        cleaned_lines = content.split("\n")
+    
+        for line in cleaned_lines:
+            line = line.strip()
+    
+            # Skip empty lines
+            if not line:
+                continue
+    
+            # Escape problematic characters (ReportLab issue fix)
+            line = line.replace("&", "and")
+    
+            elements.append(Preformatted(line, styles["Normal"]))
+            elements.append(Spacer(1, 5))
+    
         doc.build(elements)
-        
+    
         buffer.seek(0)
-        
+    
         return send_file(
             buffer,
             as_attachment=True,
             download_name="MCQs.pdf",
             mimetype="application/pdf"
         )
-
     # ===== DOCX EXPORT =====
     elif format == "docx":
         doc = DocxDocument()
