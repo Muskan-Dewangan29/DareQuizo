@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Practice Mode</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            padding: 20px;
+        }
+
+        .question-box {
+            background: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        .options {
+            margin-left: 15px;
+        }
+
+        .answer {
+            display: none;
+            margin-top: 10px;
+            color: green;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 6px 12px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Practice MCQs</h2>
+
+<div id="mcq-container"></div>
+
+<script>
+    const rawText = `{{ mcqs | safe }}`;
+
+    const container = document.getElementById("mcq-container");
+
+    // Split questions
+    const questions = rawText.split(/Q\d+\)/).slice(1);
+
+    questions.forEach((q, index) => {
+        const box = document.createElement("div");
+        box.className = "question-box";
+
+        const lines = q.trim().split("\n");
+
+        let question = "";
+        let options = [];
+        let answer = "";
+
+        lines.forEach(line => {
+            line = line.trim();
+
+            if (line.startsWith("A)") || line.startsWith("B)") || line.startsWith("C)") || line.startsWith("D)")) {
+                options.push(line);
+            } else if (line.toLowerCase().includes("answer")) {
+                answer = line;
+            } else {
+                question += line + " ";
+            }
+        });
+
+        box.innerHTML = `
+            <p><strong>Q${index + 1})</strong> ${question}</p>
+            <div class="options">
+                ${options.map(opt => `<p>${opt}</p>`).join("")}
+            </div>
+            <button onclick="this.nextElementSibling.style.display='block'">
+                Reveal Answer
+            </button>
+            <div class="answer">${answer || "Answer not provided"}</div>
+        `;
+
+        container.appendChild(box);
+    });
+</script>
+
+</body>
+</html>
