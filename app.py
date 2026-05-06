@@ -8,6 +8,7 @@ import pytesseract
 from PIL import Image
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -114,14 +115,14 @@ def index():
         difficulty = request.form.get("difficulty")
         count = request.form.get("count")
         mode = request.form.get("mode", "practice")   
-        
+
         if mode == "quiz" and "user" not in session:
             return redirect(url_for("login", next="quiz"))
-            
+
         prev_score = request.form.get("score") 
         count = int(count) if count else 5
 
-        # ✅ Adaptive Difficulty
+        # Adaptive Difficulty
         if difficulty == "Adaptive" and prev_score:
             try:
                 prev_score = int(prev_score)
@@ -144,12 +145,12 @@ def index():
         extracted_text = ""
         source_used = "Topic"
 
-        # ✅ TXT
+        # TXT
         if txt_file and txt_file.filename != "":
             extracted_text = txt_file.read().decode("utf-8", errors="ignore")
             source_used = "TXT File"
 
-        # ✅ PDF
+        # PDF
         elif pdf_file and pdf_file.filename != "":
             reader = PdfReader(pdf_file)
             pdf_text = ""
@@ -158,226 +159,67 @@ def index():
             extracted_text = pdf_text
             source_used = "PDF File"
 
-        # ✅ DOCX
+        # DOCX
         elif docx_file and docx_file.filename != "":
             doc = Document(docx_file)
             extracted_text = "\n".join([p.text for p in doc.paragraphs])
 
-        # ✅ IMAGE (OCR)
+        # IMAGE
         elif image_file and image_file.filename != "":
             img = Image.open(image_file).convert("RGB")
             extracted_text = pytesseract.image_to_string(img, lang="eng")
             source_used = "Image (OCR)"
 
-        # ✅ LIMIT extracted text (prevents 413 error)
         extracted_text = extracted_text.strip()[:6000]
 
-        # ✅ Map level to detailed instruction
         level_instruction = ""
-
         if difficulty:
             level_instruction = f"""
             The MCQs must strictly follow this exam level: {difficulty}
-
-            - If GATE: Focus on conceptual, numerical, and application-based questions.
-            - If NET: Include theoretical, conceptual, and research-oriented questions.
-            - If UPSC/CGPSC: Focus on factual + analytical + current-affairs style.
-            - If Bloom's Taxonomy:
-                * Remembering: Direct facts
-                * Understanding: Concept clarity
-                * Applying: Problem-solving
-                * Analyzing: Comparison & reasoning
-                * Evaluating: Judgement-based
-                * Creating: Scenario-based
-            - Maintain the exact tone and difficulty of the selected level.
             """
 
-        # 🔥 SIMPLE MCQ MODE (Generate Button)
+        # 🔥 PRACTICE MODE
         if mode == "practice":
             if extracted_text:
                 prompt = f"""
                 Generate exactly {count} MCQs from the given text.
-            
-                FORMAT:
-                Q1) Question
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-            
-                Q2) Question
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-            
-                RULES:
-                1. Only MCQs
-                2. No explanations
-                3. No extra text
-                4. Keep clean format
-            
+                Only MCQs. No explanations.
+
                 TEXT:
                 {extracted_text}
                 """
             else:
                 prompt = f"""
                 Generate exactly {count} MCQs on topic: {topic}
-            
-                FORMAT:
-                Q1) Question
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-            
-                RULES:
-                1. Only MCQs
-                2. No explanations
+                Only MCQs. No explanations.
                 """
+
+        # 🎯 QUIZ MODE
         else:
-             if extracted_text:
+            if extracted_text:
                 prompt = f"""
-                You are an expert exam question setter.
-    
-                Task:
-                Generate exactly {count} HIGH-QUALITY questions from the given text.
-    
-                IMPORTANT:
-                Generate a MIX of different question types, not only MCQs.
-    
-                Include:
-                1. MCQs (Multiple Choice Questions)
-                2. Fill in the blanks
-                3. Short answer questions
-                4. One word answer questions
-                5. Case study based questions
-                6. True/False
-                7. Assertion-Reason (if applicable)
-    
+                Generate {count} mixed-type questions from text.
+
                 {level_instruction}
-    
-                FORMAT:
-    
-                Q1) (MCQ)
-                Question...
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-                Answer: <A/B/C/D>
-                Explanation: ...
-    
-                Q2) (Fill in the Blank)
-                Question with ______
-                Answer: ...
-    
-                Q3) (Short Answer)
-                Question...
-                Answer: ...
-    
-                Q4) (One Word)
-                Question...
-                Answer: ...
-    
-                Q5) (Case Study)
-                <Small paragraph>
-                Questions:
-                a) ...
-                b) ...
-                Answers:
-                a) ...
-                b) ...
-    
-                Q6) (True/False)
-                Statement...
-                Answer: True/False
-    
-                Q7) (Assertion-Reason)
-                Assertion: ...
-                Reason: ...
-                Options:
-                A) Both true
-                B) Both false
-                C) Assertion true, Reason false
-                D) Assertion false, Reason true
-                Answer: ...
-    
-                RULES:
-                1. Questions must be from the text only
-                2. Do not repeat questions
-                3. Do not add extra commentary
-                4. Keep language simple and exam-oriented
-                5. Add 1-2 trusted reference links
-                STRICT FORMATTING RULES:
-                1. DO NOT use ** or any markdown symbols
-                2. DO NOT add extra blank lines between questions
-                3. DO NOT mention marks like (5 marks), (2 marks), etc.
-                4. Keep everything in plain text only
-                5. Each question must start exactly like: Q1) (Type)
-                6. Question should be in the same line, no unnecessary spacing
-                7. Do NOT add notes or instructions like [Note: ...]
+
                 TEXT:
                 {extracted_text}
                 """
             else:
-               prompt = f"""
-                You are an expert exam question setter.
-    
-                Generate exactly {count} HIGH-QUALITY questions on this topic: {topic}
-    
-                IMPORTANT:
-                Generate a MIX of different question types.
-    
-                Include:
-                - MCQs
-                - Fill in the blanks
-                - Short answer
-                - One word
-                - Case study
-                - True/False
-                - Assertion-Reason
-    
-                {level_instruction}
-    
-                Follow this format:
-    
-                Q1) (MCQ)
-                ...
-    
-                Q2) (Fill in the Blank)
-                ...
-    
-                Q3) 
-                ...
-    
-                Q4) (One Word)
-                ...
-    
-                Q5) (Case Study)
-                ...
-    
-                Q6) (True/False)
-                ...
-    
-                Q7) (Assertion-Reason)
-                ...
-    
-                RULES:
-                1. Do not repeat questions
-                2. Keep exam-level quality
-                3. Keep answers accurate
-                4. Add 1-2 trusted reference links
-                """
-    
-            response = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
-                messages=[{"role": "user", "content": prompt}]
-            )
-    
-            mcqs = response.choices[0].message.content
-            mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty}\n\n" + mcqs
+                prompt = f"""
+                Generate {count} mixed-type questions on topic: {topic}
 
+                {level_instruction}
+                """
+
+        # ✅ COMMON API CALL (for both modes)
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        mcqs = response.choices[0].message.content
+        mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty}\n\n" + mcqs
 
     if mcqs:
         return render_template("result.html", mcqs=mcqs, mode=mode)
