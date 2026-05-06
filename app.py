@@ -93,10 +93,6 @@ def login():
         if user and check_password_hash(user["password"], password):
             session["user"] = user["username"]
 
-            if session.get("pending_mode") == "quiz":
-                session.pop("pending_mode", None)
-                return redirect(url_for("index", mode="quiz"))
-            
             return redirect(url_for("index"))
 
 # DASHBOARD
@@ -123,8 +119,7 @@ def index():
         mode = request.form.get("mode", "practice")   
 
         if mode == "quiz" and "user" not in session:
-            session["pending_mode"] = "quiz"
-            return redirect(url_for("login"))
+            return redirect(url_for("login", next="quiz"))
 
         prev_score = request.form.get("score") 
         count = int(count) if count else 5
