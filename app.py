@@ -92,16 +92,12 @@ def login():
 
         if user and check_password_hash(user["password"], password):
             session["user"] = user["username"]
+            next_page = session.pop("after_login", None)
 
-            if user and check_password_hash(user["password"], password):
-                session["user"] = user["username"]
-            
-                next_page = session.pop("after_login", None)
-
-                if next_page == "quiz":
-                    return redirect(url_for("index", mode="quiz"))
+            if next_page == "quiz":
+                return redirect(url_for("index", mode="quiz"))
                 
-                return redirect(url_for("index"))
+            return redirect(url_for("index"))
         else: 
             flash("Invalid username or password") 
             
@@ -124,7 +120,7 @@ def logout():
 @app.route("/index", methods=["GET", "POST"])
 def index():
     mcqs = ""
-    mode = request.args.get("mode", "practice")
+    mode = request.args.get("mode") or request.form.get("mode", "practice")
     if request.method == "POST":
         difficulty = request.form.get("difficulty")
         count = request.form.get("count")
