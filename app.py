@@ -234,7 +234,7 @@ def index():
                 1. Only MCQs
                 2. MUST include correct answers
                 3. No explanations
-
+                """
         # 🎯 QUIZ MODE
         else:
             if extracted_text:
