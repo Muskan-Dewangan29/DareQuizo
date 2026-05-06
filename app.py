@@ -333,7 +333,10 @@ def index():
         mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty}\n\n" + mcqs
 
     if mcqs:
-        return render_template("result.html", mcqs=mcqs, mode=mode)
+        if mode == "practice":
+            return render_template("PracticeMode.html", mcqs=mcqs)
+        else:
+            return render_template("result.html", mcqs=mcqs, mode=mode)
 
     return render_template("index.html", mcqs=mcqs)
 
