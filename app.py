@@ -96,10 +96,11 @@ def login():
             if user and check_password_hash(user["password"], password):
                 session["user"] = user["username"]
             
-                if session.get("after_login") == "quiz":
-                    session.pop("after_login", None)
+                next_page = session.pop("after_login", None)
+
+                if next_page == "quiz":
                     return redirect(url_for("index", mode="quiz"))
-            
+                
                 return redirect(url_for("index"))
         else: 
             flash("Invalid username or password") 
