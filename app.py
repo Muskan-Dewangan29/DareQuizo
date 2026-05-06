@@ -125,8 +125,7 @@ def index():
         mode = request.form.get("mode", "practice")   
         # 🔐 Protect Quiz Mode (LOGIN REQUIRED)
         if mode == "quiz" and "user" not in session:
-            flash("Please login to access Quiz Mode")
-            return redirect(url_for("login"))
+            return redirect(url_for("login", next="quiz"))
         prev_score = request.form.get("score") 
 
         count = int(count) if count else 5
