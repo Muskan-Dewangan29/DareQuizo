@@ -122,6 +122,12 @@
     </a>
 </p>
 
+<div style="text-align:center; margin-bottom:20px;">
+    <button onclick="exportFile('pdf')">Export as PDF</button>
+    <button onclick="exportFile('docx')">Export as DOCX</button>
+    <button onclick="exportFile('txt')">Export as TXT</button>
+</div>
+
 <button onclick="window.location.href='/index'" class="back-btn">
     ⬅ Back to Home
 </button>
@@ -173,6 +179,27 @@
 
         container.appendChild(box);
     });
+
+function exportFile(type) {
+    fetch("/export", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            content: rawText,
+            format: type
+        })
+    })
+    .then(res => res.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "mcqs." + type;
+        a.click();
+    });
+}
 
 function toggleAnswer(btn) {
     const ans = btn.nextElementSibling;
