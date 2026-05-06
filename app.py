@@ -93,7 +93,14 @@ def login():
         if user and check_password_hash(user["password"], password):
             session["user"] = user["username"]
 
-            return redirect(url_for("index"))
+            if user and check_password_hash(user["password"], password):
+                session["user"] = user["username"]
+            
+                if session.get("after_login") == "quiz":
+                    session.pop("after_login", None)
+                    return redirect(url_for("index", mode="quiz"))
+            
+                return redirect(url_for("index"))
         else: 
             flash("Invalid username or password") 
             
@@ -116,14 +123,15 @@ def logout():
 @app.route("/index", methods=["GET", "POST"])
 def index():
     mcqs = ""
-
+    mode = request.args.get("mode", "practice")
     if request.method == "POST":
         difficulty = request.form.get("difficulty")
         count = request.form.get("count")
         mode = request.form.get("mode", "practice")   
 
         if mode == "quiz" and "user" not in session:
-            return redirect(url_for("login", next="quiz"))
+            session["after_login"] = "quiz"
+            return redirect(url_for("login"))
 
         prev_score = request.form.get("score") 
         count = int(count) if count else 5
