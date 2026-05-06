@@ -289,7 +289,8 @@ def index():
                 A) Both true 
                 B) Both false 
                 C) Assertion true, Reason false 
-                D) Assertion false, Reason true Answer: ...
+                D) Assertion false, Reason true 
+                Answer: ...
                 RULES: 
                 1. Questions must be from the text only 
                 2. Do not repeat questions 
