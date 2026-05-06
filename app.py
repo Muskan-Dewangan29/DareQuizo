@@ -8,6 +8,11 @@ import pytesseract
 from PIL import Image
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import send_file
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Image as RLImage, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from docx import Document as DocxDocument
+from io import BytesIO
 
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -444,6 +449,63 @@ def chat():
         "sources": sources
     })
 
+@app.route("/export/<format>", methods=["POST"])
+def export_file(format):
+    content = request.form.get("mcqs", "")
+
+    logo_path = "static/logo.png"   # 👉 keep your logo here
+
+    # ===== PDF EXPORT =====
+    if format == "pdf":
+        buffer = BytesIO()
+        doc = SimpleDocTemplate(buffer)
+        styles = getSampleStyleSheet()
+
+        elements = []
+
+        # Add logo
+        if os.path.exists(logo_path):
+            elements.append(RLImage(logo_path, width=100, height=50))
+            elements.append(Spacer(1, 10))
+
+        # Add content
+        for line in content.split("\n"):
+            elements.append(Paragraph(line, styles["Normal"]))
+
+        doc.build(elements)
+        buffer.seek(0)
+
+        return send_file(buffer, as_attachment=True, download_name="MCQs.pdf")
+
+    # ===== DOCX EXPORT =====
+    elif format == "docx":
+        doc = DocxDocument()
+
+        # Add logo
+        if os.path.exists(logo_path):
+            doc.add_picture(logo_path, width=None)
+
+        doc.add_paragraph(content)
+
+        buffer = BytesIO()
+        doc.save(buffer)
+        buffer.seek(0)
+
+        return send_file(buffer, as_attachment=True, download_name="MCQs.docx")
+
+    # ===== TEXT EXPORT =====
+    elif format == "txt":
+        buffer = BytesIO()
+
+        # Add logo name as header
+        text_content = "=== QUIZ BUILDER ===\n\n" + content
+
+        buffer.write(text_content.encode("utf-8"))
+        buffer.seek(0)
+
+        return send_file(buffer, as_attachment=True, download_name="MCQs.txt")
+
+    return "Invalid format"
 
 if __name__ == "__main__":
     app.run(debug=True)
