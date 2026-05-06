@@ -235,7 +235,7 @@ def index():
                 1. Only MCQs
                 2. No explanations
                 """
-         else:
+        else:
              if extracted_text:
                 prompt = f"""
                 You are an expert exam question setter.
