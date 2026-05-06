@@ -465,7 +465,12 @@ def export_file(format):
 
         # Add logo
         if os.path.exists(logo_path):
-            elements.append(RLImage(logo_path, width=100, height=50))
+            try:
+                if os.path.exists(logo_path):
+                    elements.append(RLImage(logo_path, width=100, height=50))
+                    elements.append(Spacer(1, 10))
+            except:
+                pass
             elements.append(Spacer(1, 10))
 
         # Add content
@@ -473,9 +478,15 @@ def export_file(format):
             elements.append(Paragraph(line, styles["Normal"]))
 
         doc.build(elements)
+        
         buffer.seek(0)
-
-        return send_file(buffer, as_attachment=True, download_name="MCQs.pdf")
+        
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name="MCQs.pdf",
+            mimetype="application/pdf"
+        )
 
     # ===== DOCX EXPORT =====
     elif format == "docx":
@@ -490,8 +501,13 @@ def export_file(format):
         buffer = BytesIO()
         doc.save(buffer)
         buffer.seek(0)
-
-        return send_file(buffer, as_attachment=True, download_name="MCQs.docx")
+        
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name="MCQs.docx",
+            mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
 
     # ===== TEXT EXPORT =====
     elif format == "txt":
@@ -503,7 +519,12 @@ def export_file(format):
         buffer.write(text_content.encode("utf-8"))
         buffer.seek(0)
 
-        return send_file(buffer, as_attachment=True, download_name="MCQs.txt")
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name="MCQs.txt",
+            mimetype="text/plain"
+        )
 
     return "Invalid format"
 
