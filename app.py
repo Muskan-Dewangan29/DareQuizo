@@ -14,7 +14,7 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
-@app.route("/index", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])
 def index():
     mcqs = ""
 
@@ -341,7 +341,7 @@ def chat():
         "sources": sources
     })
 # SIGNUP
-@app.route("/", methods=["GET", "POST"])
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
         username = request.form["username"]
