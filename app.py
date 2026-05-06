@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session , flash
 from dotenv import load_dotenv
 from groq import Groq
 import os
@@ -6,15 +6,116 @@ from PyPDF2 import PdfReader
 from docx import Document
 import pytesseract
 from PIL import Image
-import io
-
+import sqlite3
+from werkzeug.security import generate_password_hash, check_password_hash
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
-@app.route("/", methods=["GET", "POST"])
+# DATABASE CONNECTION
+# ======================
+def get_db():
+    conn = sqlite3.connect("users.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+# CREATE TABLE
+# ======================
+def create_table():
+    conn = get_db()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            full_name TEXT,
+            email TEXT,
+            username TEXT UNIQUE,
+            password TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+create_table()
+
+# HOME
+# ======================
+@app.route("/")
+def home():
+    return redirect(url_for("login"))
+
+# SIGNUP
+# ======================
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        full_name = request.form["name"]
+        email = request.form["email"]
+        username = request.form["username"]
+        password = request.form["password"]
+
+        hashed_password = generate_password_hash(password)
+
+        try:
+            conn = get_db()
+            conn.execute(
+                "INSERT INTO users ( full_name, email, username, password) VALUES (?, ?, ?, ?)",
+                (full_name, email, username, hashed_password)
+            )
+            conn.commit()
+            conn.close()
+
+            flash("Signup successful! Please login.")
+            return redirect(url_for("login"))
+
+        except sqlite3.IntegrityError:
+            flash("Username already exists!")
+
+    return render_template("signup.html")
+
+# LOGIN
+# ======================
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        conn = get_db()
+        user = conn.execute(
+            "SELECT * FROM users WHERE username=?",
+            (username,)
+        ).fetchone()
+        conn.close()
+
+        if user and check_password_hash(user["password"], password):
+            session["user"] = user["username"]
+            return redirect(url_for("index"))
+        else:
+            flash("Invalid username or password")
+
+    return render_template("login.html")
+
+# DASHBOARD
+# ======================
+@app.route("/dashboard")
+def dashboard():
+    if "user" in session:
+        return f"Welcome {session['user']} 🎉"
+    return redirect(url_for("login"))
+
+
+# ======================
+# LOGOUT
+# ======================
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
+
+
+@app.route("/index", methods=["GET", "POST"])
 def index():
     mcqs = ""
 
@@ -340,35 +441,6 @@ def chat():
         "reply": reply,
         "sources": sources
     })
-# SIGNUP
-@app.route("/signup", methods=["GET", "POST"])
-def signup():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-
-        # store user
-        users[username] = password
-
-        return redirect(url_for("login"))
-
-    return render_template("signup.html")
-
-# LOGIN
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-
-        # check user
-        if username in users and users[username] == password:
-            session["user"] = username
-            return redirect(url_for("dashboard"))
-        else:
-            return "Invalid login"
-
-    return render_template("login.html")
 
 
 if __name__ == "__main__":

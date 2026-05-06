@@ -24,19 +24,34 @@ body {
 /* Glass Card */
 .login-card {
     width: 380px;
-    padding: 35px;
-    border-radius: 20px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(15px);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    padding: 40px 35px;
+    border-radius: 22px;
+
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(18px);
+
+    box-shadow: 
+        0 15px 50px rgba(0,0,0,0.25),
+        inset 0 0 0 1px rgba(255,255,255,0.2);
+
     text-align: center;
     color: white;
 }
-
 /* Logo */
+.logo-video {
+    width: 55px;   /* smaller */
+    height: 55px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 12px;
+    display: block;
+    background: white;
+    padding: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
 .logo {
-    width: 70px;
-    height: 70px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     background: white;
     color: #6a5af9;
@@ -146,7 +161,7 @@ h2 {
     </form>
 
     <div class="footer-link">
-        Don't have an account? <a href="signup.html">Sign up</a>
+        Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a>
     </div>
 </div>
 
