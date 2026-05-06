@@ -94,6 +94,10 @@ def login():
             session["user"] = user["username"]
 
             return redirect(url_for("index"))
+        else: 
+            flash("Invalid username or password") 
+            
+    return render_template("login.html")
 
 # DASHBOARD
 @app.route("/dashboard")
