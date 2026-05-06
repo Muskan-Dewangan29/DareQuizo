@@ -15,14 +15,12 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
 # DATABASE CONNECTION
-# ======================
 def get_db():
     conn = sqlite3.connect("users.db")
     conn.row_factory = sqlite3.Row
     return conn
 
 # CREATE TABLE
-# ======================
 def create_table():
     conn = get_db()
     conn.execute("""
@@ -40,13 +38,11 @@ def create_table():
 create_table()
 
 # HOME
-# ======================
 @app.route("/")
 def home():
     return render_template("index.html", mcqs="")
 
 # SIGNUP
-# ======================
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -75,7 +71,6 @@ def signup():
     return render_template("signup.html")
 
 # LOGIN
-# ======================
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -98,23 +93,19 @@ def login():
     return render_template("login.html")
 
 # DASHBOARD
-# ======================
 @app.route("/dashboard")
 def dashboard():
     if "user" in session:
         return f"Welcome {session['user']} 🎉"
     return redirect(url_for("login"))
 
-
-# ======================
 # LOGOUT
-# ======================
 @app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
 
-
+# MAIN LOGIC
 @app.route("/index", methods=["GET", "POST"])
 def index():
     mcqs = ""
@@ -123,11 +114,11 @@ def index():
         difficulty = request.form.get("difficulty")
         count = request.form.get("count")
         mode = request.form.get("mode", "practice")   
-        # 🔐 Protect Quiz Mode (LOGIN REQUIRED)
+        
         if mode == "quiz" and "user" not in session:
             return redirect(url_for("login", next="quiz"))
+            
         prev_score = request.form.get("score") 
-
         count = int(count) if count else 5
 
         # ✅ Adaptive Difficulty
@@ -149,13 +140,10 @@ def index():
         txt_file = request.files.get("txt_file")
         docx_file = request.files.get("docx_file")
         image_file = request.files.get("image_file")
-        audio_file = request.files.get("audio_file")
-        video_file = request.files.get("video_file")
 
         extracted_text = ""
         source_used = "Topic"
 
-       
         # ✅ TXT
         if txt_file and txt_file.filename != "":
             extracted_text = txt_file.read().decode("utf-8", errors="ignore")
@@ -247,8 +235,6 @@ def index():
                 1. Only MCQs
                 2. No explanations
                 """
-            
-        # 🎯 QUIZ MODE (KEEP EXISTING LOGIC SAME)
          else:
              if extracted_text:
                 prompt = f"""
