@@ -97,14 +97,18 @@
         }
         animation: pulse 1.5s infinite;
 
-        @keyframes blink {
-            0%   { opacity: 1; }
-            50%  { opacity: 0.6; }
-            100% { opacity: 1; }
+        .blink-link {
+            color: #d63384;
+            font-weight: bold;
+            text-decoration: none;
+            animation: blink 0.8s infinite;
+            display: inline-block;
         }
         
-        .blink-link:hover {
-            text-decoration: underline;
+        @keyframes blink {
+            0%   { opacity: 1; }
+            50%  { opacity: 0; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
@@ -156,18 +160,6 @@
             }
         });
 
-        function toggleAnswer(btn) {
-            const ans = btn.nextElementSibling;
-        
-            if (ans.style.display === "block") {
-                ans.style.display = "none";
-                btn.innerText = "Reveal Answer";
-            } else {
-                ans.style.display = "block";
-                btn.innerText = "Hide Answer";
-            }
-        }
-
         box.innerHTML = `
             <p><strong>Q${index + 1})</strong> ${question}</p>
             <div class="options">
@@ -181,6 +173,18 @@
 
         container.appendChild(box);
     });
+
+function toggleAnswer(btn) {
+    const ans = btn.nextElementSibling;
+
+    if (ans.style.display === "block" || ans.style.display === "") {
+        ans.style.display = "none";
+        btn.innerText = "Reveal Answer";
+    } else {
+        ans.style.display = "block";
+        btn.innerText = "Hide Answer";
+    }
+}
 </script>
 
 </body>
