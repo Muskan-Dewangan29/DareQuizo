@@ -133,7 +133,7 @@ def index():
         if mode == "quiz":
             if "user" not in session:
                 session["after_login"] = "quiz"
-                return redirect(url_for("login"))
+                return redirect(url_for("result"))
         
             return render_template("result.html", mcqs="Quiz Mode Activated")
 
