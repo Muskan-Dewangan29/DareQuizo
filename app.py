@@ -95,7 +95,7 @@ def login():
             next_page = session.pop("after_login", None)
 
             if next_page == "quiz":
-                return redirect(url_for("index", mode="quiz"))
+                return redirect(url_for("result"))
                 
             return redirect(url_for("index", mode="quiz"))
         else: 
@@ -109,6 +109,10 @@ def dashboard():
     if "user" in session:
         return f"Welcome {session['user']} 🎉"
     return redirect(url_for("login"))
+
+@app.route("/result")
+def result():
+    return render_template("result.html")
 
 # LOGOUT
 @app.route("/logout")
@@ -133,7 +137,7 @@ def index():
         
             return render_template("result.html", mcqs="Quiz Mode Activated")
 
-        if mode == "quiz" and "user" not in session:
+        if mode == "quiz":
             session["after_login"] = "quiz"
             return redirect(url_for("login"))
 
