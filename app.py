@@ -131,8 +131,7 @@ def index():
         mode = request.form.get("mode", "practice")   
 
         if mode == "quiz":
-            # skip login logic for now
-            return render_template("result.html", mcqs="")
+            mode = "quiz"
 
         prev_score = request.form.get("score") 
         count = int(count) if count else 5
