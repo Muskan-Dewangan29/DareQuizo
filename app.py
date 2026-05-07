@@ -131,15 +131,8 @@ def index():
         mode = request.form.get("mode", "practice")   
 
         if mode == "quiz":
-            if "user" not in session:
-                session["after_login"] = "quiz"
-                return redirect(url_for("result"))
-        
-            return render_template("result.html", mcqs="Quiz Mode Activated")
-
-        if mode == "quiz":
-            session["after_login"] = "quiz"
-            return redirect(url_for("login"))
+            # skip login logic for now
+            return render_template("result.html", mcqs="")
 
         prev_score = request.form.get("score") 
         count = int(count) if count else 5
