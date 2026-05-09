@@ -22,15 +22,14 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
 # DATABASE CONNECTION
-# DATABASE CONNECTION
 def get_db():
     conn = psycopg2.connect(
         os.getenv("DATABASE_URL"),
+        sslmode="require",
         cursor_factory=RealDictCursor
     )
     return conn
 
-# CREATE TABLE
 # CREATE TABLE
 def create_table():
     conn = get_db()
@@ -83,8 +82,9 @@ def signup():
             flash("Signup successful! Please login.")
             return redirect(url_for("login"))
 
-        except:
-            flash("Username already exists!")
+        except Exception as e:
+            print(e)
+            flash("Signup failed!")
 
     return render_template("signup.html")
 
