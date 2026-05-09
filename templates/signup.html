@@ -48,6 +48,18 @@ body {
     margin: 0 auto 15px;
 }
 
+.logo-video {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 15px;
+    display: block;
+    background: white;
+    padding: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
 /* Text */
 h2 {
     margin-bottom: 5px;
@@ -117,7 +129,9 @@ h2 {
 <body>
 
 <div class="signup-card">
-    <div class="logo">QB</div>
+    <video class="logo-video" autoplay loop muted playsinline>
+        <source src="{{ url_for('static', filename='logo.mp4') }}" type="video/mp4">
+    </video>
 
     <h2>Create Account</h2>
     <div class="subtitle">Join DareQuizo</div>
