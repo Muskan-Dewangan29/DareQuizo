@@ -125,9 +125,9 @@ def login():
             
 
             if next_page == "quiz":
-                return redirect(url_for("result"))
+                return redirect(url_for("dashboard"))
                 
-            return redirect(url_for("result"))
+            return redirect(url_for("dashboard"))
         else: 
             flash("Invalid username or password") 
             
@@ -136,9 +136,14 @@ def login():
 # DASHBOARD
 @app.route("/dashboard")
 def dashboard():
-    if "user" in session:
-        return f"Welcome {session['user']} 🎉"
-    return redirect(url_for("login"))
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    return render_template(
+        "result.html",
+        username=session["user"]
+    )
 
 @app.route("/result")
 def result():
