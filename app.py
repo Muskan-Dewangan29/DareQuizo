@@ -72,29 +72,29 @@ def signup():
 
         hashed_password = generate_password_hash(password)
 
-                try:
-                    conn = get_db()
-                    cur = conn.cursor()
+        try:
+            conn = get_db()
+            cur = conn.cursor()
         
-                    cur.execute(
-                        "INSERT INTO users (full_name, email, username, password) VALUES (%s, %s, %s, %s)",
-                        (full_name, email, username, hashed_password)
-                    )
+            cur.execute(
+                "INSERT INTO users (full_name, email, username, password) VALUES (%s, %s, %s, %s)",
+                (full_name, email, username, hashed_password)
+            )
         
-                    conn.commit()
+            conn.commit()
         
-                    cur.close()
-                    conn.close()
+            cur.close()
+            conn.close()
         
-                    flash("Signup successful! Please login.")
-                    return redirect(url_for("login"))
+            flash("Signup successful! Please login.")
+            return redirect(url_for("login"))
         
-                except IntegrityError:
-                    flash("Username already exists!")
+        except IntegrityError:
+            flash("Username already exists!")
         
-                except Exception as e:
-                    print("SIGNUP ERROR:", e)
-                    flash("Signup failed!")
+        except Exception as e:
+            print("SIGNUP ERROR:", e)
+            flash("Signup failed!")
 
     return render_template("signup.html")
 
