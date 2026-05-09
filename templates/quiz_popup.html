@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Required</title>
+
+    <style>
+        body{
+            font-family: Arial;
+            background:#f4f4f4;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+        }
+
+        .popup{
+            background:white;
+            padding:30px;
+            border-radius:12px;
+            text-align:center;
+            width:350px;
+            box-shadow:0 0 15px rgba(0,0,0,0.2);
+        }
+
+        .btn{
+            display:inline-block;
+            margin:10px;
+            padding:10px 20px;
+            border-radius:8px;
+            text-decoration:none;
+            color:white;
+            font-weight:bold;
+        }
+
+        .login{
+            background:#007bff;
+        }
+
+        .signup{
+            background:#28a745;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="popup">
+
+    <h2>Login Required</h2>
+
+    <p>
+        You need to Login or Signup to use Quiz Mode.
+    </p>
+
+    <a href="{{ url_for('login') }}" class="btn login">
+        Login
+    </a>
+
+    <a href="{{ url_for('signup') }}" class="btn signup">
+        Signup
+    </a>
+
+</div>
+
+</body>
+</html>
