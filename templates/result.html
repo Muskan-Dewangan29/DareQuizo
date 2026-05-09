@@ -134,9 +134,8 @@
 <body class="bg-light">
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark shadow-lg px-4 py-3 sticky-top"
-         id="topNav"
-         style="background: linear-gradient(90deg, #0d1b2a, #1b263b, #415a77); border-bottom: 2px solid rgba(255,255,255,0.1);">    <div class="d-flex flex-column">
+<nav class="navbar navbar-dark px-4 py-3 shadow-sm" id="topNav" style="background: linear-gradient(90deg, #0f172a, #1e293b, #0b1324);">
+    <div class="d-flex flex-column">
         <video class="logo-video" autoplay muted loop playsinline>
             <source src="{{ url_for('static', filename='logo.mp4') }}" type="video/mp4">
         </video>
@@ -1114,10 +1113,8 @@ function applyTheme() {
             c.style.color = "white";
         });
 
-    if (navbar) {
-        navbar.style.background =
-            "linear-gradient(90deg, #0d1b2a, #1b263b, #415a77)";
-    }
+        if (navbar) navbar.style.background = "linear-gradient(90deg, #020617, #0f172a)";
+
         if (btn) btn.innerText = "☀️";
 
     } else {
@@ -1130,10 +1127,7 @@ function applyTheme() {
             c.style.color = "black";
         });
 
-        if (navbar) {
-            navbar.style.background =
-                "linear-gradient(90deg, #0d1b2a, #1b263b, #415a77)";
-        }
+        if (navbar) navbar.style.background = "linear-gradient(90deg, #0f172a, #1e293b, #0b1324)";
 
         if (btn) btn.innerText = "🌙";
     }
