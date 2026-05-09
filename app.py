@@ -8,6 +8,7 @@ import pytesseract
 from PIL import Image
 import psycopg2
 from psycopg2.extras import RealDictCursor
+from psycopg2 import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
 from reportlab.platypus import Preformatted, SimpleDocTemplate, Paragraph, Image as RLImage, Spacer
@@ -20,14 +21,18 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+app.config["SESSION_PERMANENT"] = False
 
 # DATABASE CONNECTION
 def get_db():
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
     conn = psycopg2.connect(
-        os.getenv("DATABASE_URL"),
+        DATABASE_URL,
         sslmode="require",
         cursor_factory=RealDictCursor
     )
+
     return conn
 
 # CREATE TABLE
@@ -67,24 +72,29 @@ def signup():
 
         hashed_password = generate_password_hash(password)
 
-        try:
-            conn = get_db()
-            cur = conn.cursor()
-            
-            cur.execute(
-                "INSERT INTO users (full_name, email, username, password) VALUES (%s, %s, %s, %s)",
-                (full_name, email, username, hashed_password)
-            )
-            
-            conn.commit()
-            cur.close()
-            conn.close()
-            flash("Signup successful! Please login.")
-            return redirect(url_for("login"))
-
-        except Exception as e:
-            print(e)
-            flash("Signup failed!")
+                try:
+                    conn = get_db()
+                    cur = conn.cursor()
+        
+                    cur.execute(
+                        "INSERT INTO users (full_name, email, username, password) VALUES (%s, %s, %s, %s)",
+                        (full_name, email, username, hashed_password)
+                    )
+        
+                    conn.commit()
+        
+                    cur.close()
+                    conn.close()
+        
+                    flash("Signup successful! Please login.")
+                    return redirect(url_for("login"))
+        
+                except IntegrityError:
+                    flash("Username already exists!")
+        
+                except Exception as e:
+                    print("SIGNUP ERROR:", e)
+                    flash("Signup failed!")
 
     return render_template("signup.html")
 
@@ -115,7 +125,7 @@ def login():
             if next_page == "quiz":
                 return redirect(url_for("result"))
                 
-            return redirect(url_for("index", mode="quiz"))
+            return redirect(url_for("home"))
         else: 
             flash("Invalid username or password") 
             
