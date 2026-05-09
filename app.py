@@ -148,6 +148,17 @@ def logout():
     session.pop("user", None)
     return redirect(url_for("login"))
 
+# QUIZ ACCESS CHECK
+@app.route("/quiz")
+def quiz():
+
+    # User already logged in
+    if "user" in session:
+        return redirect(url_for("result"))
+
+    # User not logged in
+    return render_template("quiz_popup.html")
+
 # MAIN LOGIC
 @app.route("/index", methods=["GET", "POST"])
 def index():
