@@ -6,7 +6,8 @@ from PyPDF2 import PdfReader
 from docx import Document
 import pytesseract
 from PIL import Image
-import sqlite3
+import psycopg2
+from psycopg2.extras import RealDictCursor
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
 from reportlab.platypus import Preformatted, SimpleDocTemplate, Paragraph, Image as RLImage, Spacer
@@ -21,24 +22,32 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
 # DATABASE CONNECTION
+# DATABASE CONNECTION
 def get_db():
-    conn = sqlite3.connect("users.db")
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(
+        os.getenv("DATABASE_URL"),
+        cursor_factory=RealDictCursor
+    )
     return conn
 
 # CREATE TABLE
+# CREATE TABLE
 def create_table():
     conn = get_db()
-    conn.execute("""
+    cur = conn.cursor()
+
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             full_name TEXT,
             email TEXT,
             username TEXT UNIQUE,
             password TEXT
         )
     """)
+
     conn.commit()
+    cur.close()
     conn.close()
 
 create_table()
@@ -61,17 +70,20 @@ def signup():
 
         try:
             conn = get_db()
-            conn.execute(
-                "INSERT INTO users ( full_name, email, username, password) VALUES (?, ?, ?, ?)",
+            cur = conn.cursor()
+            
+            cur.execute(
+                "INSERT INTO users (full_name, email, username, password) VALUES (%s, %s, %s, %s)",
                 (full_name, email, username, hashed_password)
             )
+            
             conn.commit()
+            cur.close()
             conn.close()
-
             flash("Signup successful! Please login.")
             return redirect(url_for("login"))
 
-        except sqlite3.IntegrityError:
+        except:
             flash("Username already exists!")
 
     return render_template("signup.html")
@@ -84,10 +96,16 @@ def login():
         password = request.form["password"]
 
         conn = get_db()
-        user = conn.execute(
-            "SELECT * FROM users WHERE username=?",
+        cur = conn.cursor()
+
+        cur.execute(
+            "SELECT * FROM users WHERE username=%s",
             (username,)
-        ).fetchone()
+        )
+        
+        user = cur.fetchone()
+        
+        cur.close()
         conn.close()
 
         if user and check_password_hash(user["password"], password):
