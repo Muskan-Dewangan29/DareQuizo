@@ -86,7 +86,7 @@ def signup():
             cur.close()
             conn.close()
         
-            flash("Signup successful! Please login.")
+            flash("Account created successfully 🎉 Please login.")
             return redirect(url_for("login"))
         
         except IntegrityError:
@@ -120,7 +120,9 @@ def login():
 
         if user and check_password_hash(user["password"], password):
             session["user"] = user["username"]
+            flash(f"Welcome {user['username']}! Login successful 🎉")
             next_page = session.pop("after_login", None)
+            
 
             if next_page == "quiz":
                 return redirect(url_for("result"))
