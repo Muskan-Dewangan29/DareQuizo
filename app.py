@@ -125,7 +125,7 @@ def login():
             if next_page == "quiz":
                 return redirect(url_for("result"))
                 
-            return redirect(url_for("home"))
+            return redirect(url_for("result"))
         else: 
             flash("Invalid username or password") 
             
