@@ -57,6 +57,14 @@ def create_table():
 
 create_table()
 
+@app.route('/robots.txt')
+def robots():
+    return send_file('static/robots.txt')
+
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_file('static/sitemap.xml')
+
 # HOME
 @app.route("/")
 def home():
