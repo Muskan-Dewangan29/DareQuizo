@@ -1,7 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DareQuizo</title>
+    <title>DareQuizo - AI Quiz & MCQ Generator</title>
+
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description"
+    content="DareQuizo is an AI-powered platform that generates MCQs, fill in the blanks, true false, assertion reason, case study and descriptive questions instantly from PDFs, DOCX, text and images.">
+    
+    <meta name="keywords"
+    content="AI Quiz Generator, MCQ Generator, Question Generator, AI Exam Preparation, DareQuizo">
+    
+    <meta name="author" content="DareQuizo">
+    
+    <meta property="og:title" content="DareQuizo">
+    
+    <meta property="og:description"
+    content="Generate AI-powered questions instantly using DareQuizo.">
+    
+    <meta property="og:type" content="website">
+    
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -240,7 +261,7 @@
         </div>
 
            <button class="btn btn-primary w-100 mt-4 py-2 rounded-4 fw-semibold">
-                🚀 Generate MCQs
+                🚀 Generate Questions
             </button>
             
             <!-- ✅ QUIZ MODE BUTTON -->
@@ -263,6 +284,17 @@
             {% endif %}
 
         </form>
+        <div class="mt-5">
+            <h3 class="fw-bold">About DareQuizo</h3>
+        
+            <p class="text-muted">
+                DareQuizo is an AI-powered exam preparation platform
+                that generates MCQs, fill in the blanks, true/false,
+                assertion-reason, case study, short answer and long
+                answer questions instantly from PDF, DOCX, TXT files
+                and images using Artificial Intelligence.
+            </p>
+        </div>
     </div>
 </div>
 
