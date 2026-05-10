@@ -266,23 +266,33 @@
     });
 
 function exportFile(type) {
-    fetch("/export", {
+
+    const formData = new FormData();
+
+    formData.append("mcqs", rawText);
+
+    fetch(`/export/${type}`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            content: rawText,
-            format: type
-        })
+        body: formData
     })
     .then(res => res.blob())
     .then(blob => {
+
         const url = window.URL.createObjectURL(blob);
+
         const a = document.createElement("a");
+
         a.href = url;
         a.download = "mcqs." + type;
+
+        document.body.appendChild(a);
+
         a.click();
+
+        a.remove();
+
+        window.URL.revokeObjectURL(url);
+
     });
 }
 
