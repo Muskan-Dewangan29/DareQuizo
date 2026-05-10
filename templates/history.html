@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History - DareQuizo</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <h2 class="mb-4">📜 Your History</h2>
+
+    {% if history %}
+
+        {% for item in history %}
+
+        <div class="card shadow-sm mb-4 rounded-4">
+            <div class="card-body">
+
+                <h5>{{ item.topic }}</h5>
+
+                <p>
+                    <strong>Level:</strong> {{ item.difficulty }} |
+                    <strong>Type:</strong> {{ item.question_type }} |
+                    <strong>Mode:</strong> {{ item.mode }}
+                </p>
+
+                <small class="text-muted">
+                    {{ item.created_at }}
+                </small>
+
+                <hr>
+
+                <pre style="white-space: pre-wrap;">{{ item.generated_content }}</pre>
+
+            </div>
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No history found.
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
