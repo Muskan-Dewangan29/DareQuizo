@@ -243,9 +243,11 @@
 
             if (line.startsWith("A)") || line.startsWith("B)") || line.startsWith("C)") || line.startsWith("D)")) {
                 options.push(line);
-            } else if (line.toLowerCase().includes("answer")) {
-                const match = line.match(/[A-D]/i);
-                answer = match ? "Correct Answer: " + match[0].toUpperCase() : line;
+            } else if (line.toLowerCase().startsWith("answer")) {
+
+                const cleaned = line.replace("Answer:", "").trim();
+            
+                answer = "Correct Answer: " + cleaned;
             } else {
                 question += line + " ";
             }
