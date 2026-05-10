@@ -12,6 +12,7 @@ from psycopg2 import IntegrityError
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import send_file
 from reportlab.platypus import Preformatted, SimpleDocTemplate, Paragraph, Image as RLImage, Spacer
+from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet
 from docx import Document as DocxDocument
 from io import BytesIO
@@ -514,7 +515,7 @@ def export_file(format):
     if format == "pdf":
         buffer = BytesIO()
     
-        doc = SimpleDocTemplate(buffer, pagesize=None)
+        doc = SimpleDocTemplate(buffer, pagesize=letter)
         styles = getSampleStyleSheet()
     
         elements = []
