@@ -164,10 +164,26 @@
     <div class="d-flex align-items-center gap-3">
         <span class="text-light small opacity-75">Upload • Generate • Learn</span>
     
-        <!-- ✅ LOGIN BUTTON -->
-        <a href="/login" class="btn btn-sm btn-outline-light rounded-3">
-            🔐 Login
-        </a>
+        {% if session.get("user") %}
+    
+            <!-- ✅ HISTORY BUTTON -->
+            <a href="/history" class="btn btn-sm btn-warning rounded-3">
+                📜 History
+            </a>
+    
+            <!-- ✅ LOGOUT BUTTON -->
+            <a href="/logout" class="btn btn-sm btn-outline-light rounded-3">
+                🚪 Logout
+            </a>
+    
+        {% else %}
+    
+            <!-- ✅ LOGIN BUTTON -->
+            <a href="/login" class="btn btn-sm btn-outline-light rounded-3">
+                🔐 Login
+            </a>
+    
+        {% endif %}
     
         <button id="themeBtn" onclick="toggleTheme()" class="btn btn-sm btn-light rounded-3">
             🌙
