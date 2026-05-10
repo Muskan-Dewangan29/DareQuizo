@@ -262,14 +262,62 @@ def index():
         
         else:
             format_instruction = """
-            Generate a MIX of:
-            - MCQs
-            - Fill in the blanks
-            - True/False
-            - Short Answer
-            - Long Answer
-            - Assertion/Reason
-            - Case Study
+            Generate a proper MIXED question paper using different question types.
+        
+            STRICT FORMAT:
+        
+            Q1) (MCQ)
+            Question...
+            A) ...
+            B) ...
+            C) ...
+            D) ...
+            Answer: ...
+        
+            Q2) (Fill in the Blank)
+            Question with ______
+            Answer: ...
+        
+            Q3) (True/False)
+            Statement...
+            Answer: True
+        
+            Q4) (Short Answer)
+            Question...
+            Answer: ...
+        
+            Q5) (One Word)
+            Question...
+            Answer: ...
+        
+            Q6) (Assertion/Reason)
+            Assertion: ...
+            Reason: ...
+        
+            A) Both true
+            B) Both false
+            C) Assertion true, Reason false
+            D) Assertion false, Reason true
+        
+            Answer: ...
+        
+            Q7) (Case Study)
+            <Small paragraph>
+        
+            Questions:
+            a) ...
+            b) ...
+        
+            Answers:
+            a) ...
+            b) ...
+        
+            IMPORTANT RULES:
+            1. Every question must be separate
+            2. Do NOT combine question types together
+            3. Do NOT generate paragraph style output
+            4. Each question must start with Q1), Q2), etc.
+            5. Keep proper spacing between questions
             """
         mode = request.form.get("mode", "practice")   
 
