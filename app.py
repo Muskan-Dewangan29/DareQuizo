@@ -51,6 +51,19 @@ def create_table():
         )
     """)
 
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS history (
+            id SERIAL PRIMARY KEY,
+            username TEXT,
+            topic TEXT,
+            difficulty TEXT,
+            question_type TEXT,
+            mode TEXT,
+            generated_content TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    
     conn.commit()
     cur.close()
     conn.close()
@@ -488,6 +501,32 @@ def index():
         mcqs = response.choices[0].message.content
         mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty} | Question Type: {question_type}\n\n" + mcqs
 
+        # SAVE HISTORY
+        if "user" in session:
+            try:
+                conn = get_db()
+                cur = conn.cursor()
+        
+                cur.execute("""
+                    INSERT INTO history
+                    (username, topic, difficulty, question_type, mode, generated_content)
+                    VALUES (%s, %s, %s, %s, %s, %s)
+                """, (
+                    session["user"],
+                    topic,
+                    difficulty,
+                    question_type,
+                    mode,
+                    mcqs
+                ))
+        
+                conn.commit()
+                cur.close()
+                conn.close()
+        
+            except Exception as e:
+                print("HISTORY SAVE ERROR:", e)
+    
     if mcqs:
         if mode == "practice":
             return render_template("PracticeMode.html", mcqs=mcqs)
@@ -678,6 +717,32 @@ def export_file(format):
         )
 
     return "Invalid format"
+
+# USER HISTORY
+@app.route("/history")
+def history():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT * FROM history
+        WHERE username=%s
+        ORDER BY created_at DESC
+    """, (session["user"],))
+
+    history_data = cur.fetchall()
+
+    cur.close()
+    conn.close()
+
+    return render_template(
+        "history.html",
+        history=history_data
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
