@@ -175,6 +175,94 @@ def index():
     if request.method == "POST":
         difficulty = request.form.get("difficulty")
         count = request.form.get("count")
+        question_type = request.form.get("question_type", "Mixed")
+        format_instruction = ""
+
+        if question_type == "MCQs":
+            format_instruction = """
+            FORMAT:
+            Q1) Question
+            A) ...
+            B) ...
+            C) ...
+            D) ...
+            Answer: <A/B/C/D>
+            """
+        
+        elif question_type == "Fill in the Blanks":
+            format_instruction = """
+            FORMAT:
+            Q1) The CPU is known as the ______ of the computer.
+            Answer: Brain
+            """
+        
+        elif question_type == "True/False":
+            format_instruction = """
+            FORMAT:
+            Q1) Python is a programming language.
+            Answer: True
+            """
+        
+        elif question_type == "Assertion/Reason":
+            format_instruction = """
+            FORMAT:
+            Q1) Assertion: ...
+            Reason: ...
+        
+            A) Both true
+            B) Both false
+            C) Assertion true, Reason false
+            D) Assertion false, Reason true
+        
+            Answer: ...
+            """
+        
+        elif question_type == "Case Study":
+            format_instruction = """
+            FORMAT:
+            Q1) <Case Study Paragraph>
+        
+            Questions:
+            a) ...
+            b) ...
+        
+            Answers:
+            a) ...
+            b) ...
+            """
+        
+        elif question_type == "One Word":
+            format_instruction = """
+            FORMAT:
+            Q1) What is the brain of computer?
+            Answer: CPU
+            """
+        
+        elif question_type == "Short Answer":
+            format_instruction = """
+            FORMAT:
+            Q1) Explain DBMS.
+            Answer: ...
+            """
+        
+        elif question_type == "Long Answer":
+            format_instruction = """
+            FORMAT:
+            Q1) Explain the OSI Model in detail.
+            Answer: ...
+            """
+        
+        else:
+            format_instruction = """
+            Generate a MIX of:
+            - MCQs
+            - Fill in the blanks
+            - True/False
+            - Short Answer
+            - Long Answer
+            - Assertion/Reason
+            - Case Study
+            """
         mode = request.form.get("mode", "practice")   
 
         if mode == "quiz":
@@ -253,48 +341,39 @@ def index():
         if mode == "practice":
             if extracted_text:
                 prompt = f"""
-                Generate exactly {count} MCQs from the given text. 
+                Generate exactly {count} questions from the given text.
+
+                IMPORTANT:
+                Generate ONLY this question type:
+                {question_type} 
                 
-                FORMAT:
-                Q1) Question
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-                Answer: <A/B/C/D>
-                
-                Q2) Question
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-                Answer: <A/B/C/D>
+                {format_instruction}
                 
                 RULES:
-                1. Only MCQs
+                1. Generate only {question_type}
                 2. DO NOT add explanations
                 3. MUST include correct answer for each question
                 4. Keep clean format
+                5. Strictly follow the selected question type
                 
                 TEXT:
                 {extracted_text}
                 """
             else:
                 prompt = f"""
-               Generate exactly {count} MCQs on topic: {topic}
+               Generate exactly {count} questions on topic: {topic}
 
-                FORMAT:
-                Q1) Question
-                A) ...
-                B) ...
-                C) ...
-                D) ...
-                Answer: <A/B/C/D>
+                IMPORTANT:
+                Generate ONLY this question type:
+                {question_type}
+
+                {format_instruction}
                 
                 RULES:
-                1. Only MCQs
+                1. Generate only {question_type}
                 2. MUST include correct answers
                 3. No explanations
+                4. Strictly follow the selected question type
                 """
         # 🎯 QUIZ MODE
         else:
@@ -304,60 +383,19 @@ def index():
                 Task: 
                 Generate exactly {count} HIGH-QUALITY questions from the given text. 
                 IMPORTANT: 
-                Generate a MIX of different question types, not only MCQs.
-                Include:
-                1. MCQs (Multiple Choice Questions) 
-                2. Fill in the blanks 
-                3. Short answer questions 
-                4. One word answer questions 
-                5. Case study based questions 
-                6. True/False 
-                7. Assertion-Reason (if applicable) 
+                Generate ONLY this question type:
+                {question_type}
+                Question Type Required:
+                {question_type} 
                 {level_instruction} 
-                FORMAT: 
-                Q1) (MCQ) 
-                Question... 
-                A) ... 
-                B) ... 
-                C) ... 
-                D) ...
-                Answer: <A/B/C/D>
-                Explanation: ... 
-                Q2) (Fill in the Blank) 
-                Question with ______
-                Answer: ... 
-                Q3) (Short Answer) 
-                Question... 
-                Answer: ... 
-                Q4) (One Word)
-                Question... 
-                Answer: ... 
-                Q5) (Case Study) 
-                <Small paragraph>
-                Questions: 
-                a) ... 
-                b) ... 
-                Answers:
-                a) ... 
-                b) ... 
-                Q6) (True/False) 
-                Statement... 
-                Answer: True/False 
-                Q7) (Assertion-Reason)
-                Assertion: ... 
-                Reason: ...
-                Options: 
-                A) Both true 
-                B) Both false 
-                C) Assertion true, Reason false 
-                D) Assertion false, Reason true 
-                Answer: ...
+                {format_instruction}
                 RULES: 
                 1. Questions must be from the text only 
                 2. Do not repeat questions 
                 3. Do not add extra commentary 
                 4. Keep language simple and exam-oriented 
                 5. Add 1-2 trusted reference links 
+                6. Strictly follow the selected question type
                 STRICT FORMATTING RULES: 
                 1. DO NOT use ** or any markdown symbols 
                 2. DO NOT add extra blank lines between questions 
@@ -373,28 +411,17 @@ def index():
                 You are an expert exam question setter.
                 Generate exactly {count} HIGH-QUALITY questions on this topic: {topic} 
                 IMPORTANT: 
-                Generate a MIX of different question types. Include: 
-                - MCQs 
-                - Fill in the blanks 
-                - Short answer 
-                - One word 
-                - Case study 
-                - True/False 
-                - Assertion-Reason 
+                Generate ONLY this question type:
+                {question_type} 
                 {level_instruction} 
-                Follow this format: 
-                Q1) (MCQ) ... 
-                Q2) (Fill in the Blank) ... 
-                Q3) ... 
-                Q4) (One Word) ... 
-                Q5) (Case Study) ... 
-                Q6) (True/False) ... 
-                Q7) (Assertion-Reason) ...
+                Follow this format:
+                {format_instruction}
                 RULES: 
                 1. Do not repeat questions 
                 2. Keep exam-level quality 
                 3. Keep answers accurate 
-                4. Add 1-2 trusted reference links """
+                4. Add 1-2 trusted reference links 
+                5. Strictly follow the selected question type"""
 
         # ✅ COMMON API CALL (for both modes)
         response = client.chat.completions.create(
@@ -403,7 +430,7 @@ def index():
         )
 
         mcqs = response.choices[0].message.content
-        mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty}\n\n" + mcqs
+        mcqs = f"Source Used: {source_used} | Mode: {mode} | Level: {difficulty} | Question Type: {question_type}\n\n" + mcqs
 
     if mcqs:
         if mode == "practice":
