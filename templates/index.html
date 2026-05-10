@@ -201,25 +201,43 @@
 
             <div class="row g-3">
 
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Select Level</label>
-                    <select class="form-control" name="difficulty">
-                        <option>Easy</option>
-                        <option>Medium</option>
-                        <option>Hard</option>
-                        <option>GATE</option>
-                        <option>NET</option>
-                        <option>UPSC</option>
-                        <option>CGPSC</option>
-                    </select>
-                </div>
-
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Number of Questions</label>
-                    <input class="form-control" name="count" type="number" value="5">
-                </div>
-
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Select Level</label>
+                <select class="form-control" name="difficulty">
+                    <option>Easy</option>
+                    <option>Medium</option>
+                    <option>Hard</option>
+                    <option>GATE</option>
+                    <option>NET</option>
+                    <option>UPSC</option>
+                    <option>CGPSC</option>
+                </select>
             </div>
+        
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Question Type</label>
+        
+                <select class="form-control" name="question_type">
+        
+                    <option value="Mixed">Mixed</option>
+                    <option value="MCQs">MCQs</option>
+                    <option value="Fill in the Blanks">Fill in the Blanks</option>
+                    <option value="True/False">True/False</option>
+                    <option value="Assertion/Reason">Assertion/Reason</option>
+                    <option value="Case Study">Case Study Types</option>
+                    <option value="One Word">One Word Answer</option>
+                    <option value="Short Answer">Short Answer</option>
+                    <option value="Long Answer">Long Answer</option>
+        
+                </select>
+            </div>
+        
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Number of Questions</label>
+                <input class="form-control" name="count" type="number" value="5">
+            </div>
+        
+        </div>
 
            <button class="btn btn-primary w-100 mt-4 py-2 rounded-4 fw-semibold">
                 🚀 Generate MCQs
