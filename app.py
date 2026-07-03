@@ -397,13 +397,12 @@ def index():
             - If GATE: Focus on conceptual, numerical, and application-based questions. 
             - If NET: Include theoretical, conceptual, and research-oriented questions. 
             - If UPSC/CGPSC: Focus on factual + analytical + current-affairs style. 
-            - If Bloom's Taxonomy: 
-                * Remembering: Direct facts 
-                * Understanding: Concept clarity 
-                * Applying: Problem-solving 
-                * Analyzing: Comparison & reasoning 
-                * Evaluating: Judgement-based 
-                * Creating: Scenario-based 
+            - If Remembering: Ask direct factual recall questions.
+            - If Understanding: Test concept clarity and explanation.
+            - If Applying: Focus on problem-solving and practical use.
+            - If Analyzing: Require comparison, reasoning and analysis.
+            - If Evaluating: Require judgement, justification and critical thinking.
+            - If Creating: Require design, innovation and scenario-based thinking.
             - Maintain the exact tone and difficulty of the selected level. """
 
         # 🔥 PRACTICE MODE
