@@ -1,4 +1,4 @@
-# 🧠 AI MCQ Generator Pro
+# DareQuizo
 
 An intelligent **Generative AI-powered MCQ Generator** that automatically creates high-quality multiple-choice questions from various input formats including PDFs, documents, images.
 
